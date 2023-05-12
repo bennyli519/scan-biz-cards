@@ -1,0 +1,24 @@
+name: Deployment
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: pnpm/action-setup@v2.1.0
+      with:
+          version: 7.2.1
+    - name: Install Packages
+      run: pnpm install
+    - name: Build page
+      run: pnpm  build:prod
+    - name: new 404.html
+      run: cd ./build/ && cp index.html 404.html && cp ../CNAME CNAME && cd ..
+    - name: Deploy to gh-pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        publish_dir: ./build
