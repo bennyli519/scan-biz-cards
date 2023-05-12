@@ -76,3 +76,34 @@ export const setWindowHeight = () => {
     .getElementsByTagName('body')[0]
     .style.setProperty('--height-primary', `${windowHeight}px`);
 };
+
+export const base64ToFile = (base64: string, cb: (file: any) => void) => {
+	try {
+		fetch(base64)
+			.then((r) => r.blob())
+			.then((blb) => {
+				const file = new File([blb], `${randomId()}.png`, {
+					type: 'image/png',
+				});
+				cb(file);
+			});
+	} catch (error) {
+		cb(null);
+	}
+};
+
+export const randomId = () => {
+	return Math.random().toString(36).substr(2, 9);
+};
+
+export const getBase64 = (img: File, callback: (res: string) => void): void => {
+	const reader: any = new FileReader();
+	reader.readAsDataURL(img);
+	reader?.addEventListener('load', () => callback(reader.result));
+};
+
+export const setLocalData = (key: KEYS, value: any) => {
+	try {
+		localStorage.setItem(key, JSON.stringify(value));
+	} catch (error) {}
+};

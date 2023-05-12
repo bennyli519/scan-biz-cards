@@ -1,15 +1,8 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: 小白
- * @Date: 2020-10-05 22:06:34
- * @LastEditors: 小白
- * @LastEditTime: 2022-02-17 00:14:09
- */
 import { White } from '@/typings';
 import { lazy } from 'react';
 const Search = lazy(() => import(/* chunkName: "Search" */ '@/pages/Search'));
 const List = lazy(() => import(/* chunkName: List */ '@/pages/List'));
+const Camera = lazy(() => import('@/pages/Camera'));
 const Home = lazy(() => import(/* chunkName: Home */ '@/pages/Home'));
 const Detail = lazy(() => import(/* chunkName: Detail */ '@/pages/Detail'));
 const Index = lazy(() => import(/* chunkName: Index */ '@/pages/Index'));
@@ -22,24 +15,18 @@ export const TabBarList: White.RouteTabBar[] = [
   {
     path: '/',
     component: Home,
-    icon: 'white-home1',
-    sceneMode: 'scroll',
-    title: '首页',
-  },
-  {
-    path: '/detail',
-    component: Detail,
-    icon: 'white-tradingdata',
-    sceneMode: 'scroll',
-    title: '详情',
-  },
-  {
-    path: '/list',
-    component: List,
     icon: 'white-order',
     sceneMode: 'scroll',
-    title: '统计',
+    title: 'Contact List',
   },
+
+  // {
+  //   path: '/list',
+  //   component: List,
+  //   icon: 'white-order',
+  //   sceneMode: 'scroll',
+  //   title: '统计',
+  // },
   {
     path: '/search',
     component: Search,
@@ -54,6 +41,10 @@ const routes: White.RouteConfig[] = [
     path: '/',
     component: Index,
     tabBars: TabBarList,
+  },
+  {
+    path: '/camera',
+    component: Camera,
   },
   {
     path: '/other',

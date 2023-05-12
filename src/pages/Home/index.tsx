@@ -1,25 +1,15 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: 小白
- * @Date: 2020-10-04 19:16:31
- * @LastEditors: 小白
- * @LastEditTime: 2022-02-16 22:43:05
- */
-import { memo, useState } from 'react';
-import LoadingView from '../../components/LoadingView';
+import { memo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { CameraOutline } from 'antd-mobile-icons'
+
 
 const Home = () => {
-  const [count, setCount] = useState(1);
+  const navigate = useNavigate()
   return (
-    <div>
-      <div
-        className="bg-red-500 hover:bg-blue-400 mt-[10px] w-[100px]"
-        onClick={() => setCount((count) => count + 1)}>
-        home5434
+    <div className='h-full w-full flex justify-center items-center'>
+      <div className='h-8 w-8 bg-blue-400 flex justify-center items-center rounded-full'  onClick={()=>navigate('/camera')}>
+        <CameraOutline color='#fff' fontSize={36} />
       </div>
-      <div className="bg-green-200 font-$30">{count}</div>
-      <LoadingView />
     </div>
   );
 };
