@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getLocalData, setLocalData } from '@/utils';
 import whatSApp from '@/assets/images/icons/whatSApp.svg';
 import emailIcon from '@/assets/images/icons/email.svg';
-import wechat from '@/assets/images/icons/wechat.svg';
+import addressIcon from '@/assets/images/icons/address.svg';
 import call from '@/assets/images/icons/call.svg';
 
 interface CardInfo {
@@ -80,6 +80,19 @@ const ScanResult = (props: Props) => {
     [data],
   );
 
+  const address = useMemo(
+    () =>{
+      const CAddresss = data.filter(
+        (item: { Name: string; Value: string }) => item.Name === '地址',
+      )[0]?.Value;
+      const EAddresss = data.filter(
+        (item: { Name: string; Value: string }) => item.Name === '英文地址',
+      )[0]?.Value
+      return EAddresss ?? CAddresss ?? ''
+    },
+    [data],
+  );
+
   const addFriendInWeChat = (username: string, message: string) => {
     const url = `weixin://addfriend/${username}?hello=${encodeURIComponent(
       message,
@@ -99,6 +112,11 @@ const ScanResult = (props: Props) => {
 
   const callPhone = (phone:string)=>{
     window.location.href = `tel:${phone}`
+  }
+
+  const checkMap =(address:string)=>{
+    console.log('address',address)
+    window.location.href = `https://www.google.com/maps/search/?api=1&query=${address}`
   }
 
   useEffect(() => {
@@ -131,7 +149,10 @@ const ScanResult = (props: Props) => {
             addWhatApp(phone);
           }}
         />
-        {/* <img width={40} height={40} src={wechat} /> */}
+        <img width={40} height={40} src={addressIcon}onClick={()=>{
+           checkMap(address)
+        }} 
+        />
         <img width={40} height={40} src={call} onClick={()=>{callPhone(phone)}} />
       </div>
       <Form

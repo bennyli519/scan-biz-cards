@@ -67,6 +67,9 @@ const ScanResult = ({ result }: Props) => {
   const initialValues = useMemo(() => {
     const obj: Record<string, string> = {};
     data.forEach((item: CardInfo) => {
+      if(item.Name === '英文地址'){
+        item.Value = item.Value.replaceAll(',',', ')
+      }
       obj[item.Name] = item.Value;
     });
     obj.notes = '';
