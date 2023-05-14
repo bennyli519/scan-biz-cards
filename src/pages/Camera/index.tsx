@@ -1,6 +1,6 @@
 import { base64ToFile, getBase64, setLocalData } from '../../utils';
 import { useRef, useState } from 'react';
-import { SpinLoading } from 'antd-mobile';
+import { SpinLoading, Toast } from 'antd-mobile';
 import { CloseOutline } from 'antd-mobile-icons';
 import { Camera } from 'react-camera-pro';
 import { useNavigate } from 'react-router-dom';
@@ -32,14 +32,18 @@ const CameraPage = () => {
             'Content-Type': 'multipart/form-data',
           },
         });
-		
-		setLocalData('cardInfo',cardInfo)
-		navigate('/result',{
-			state:{
-				data:cardInfo,
-				imageData:imageUri,
-			}
-		})
+		if(!cardInfo){
+      Toast.show('名片识别失败，请重试');
+      navigate('/');
+    } else{
+      setLocalData('cardInfo',cardInfo)
+      navigate('/result',{
+        state:{
+          data:cardInfo,
+          imageData:imageUri,
+        }
+      })
+    }
 		setAppLoading(false);
       });
     } catch (error) {
@@ -63,7 +67,7 @@ const CameraPage = () => {
       )}
       <div className="container h-screen">
         <div
-          className="absolute text-[#f1f5f9] h-5 w-5 top-4 left-2"
+          className="z-50 absolute text-[#f1f5f9] h-5 w-5 top-4 left-2"
           onClick={() => {
             navigate(-1);
           }}>

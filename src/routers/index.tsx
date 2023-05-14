@@ -1,7 +1,7 @@
 
 import { White } from '@/typings';
 import { lazy } from 'react';
-const Search = lazy(() => import(/* chunkName: "Search" */ '@/pages/Search'));
+
 const List = lazy(() => import(/* chunkName: List */ '@/pages/List'));
 const Camera = lazy(() => import('@/pages/Camera'));
 const Home = lazy(() => import(/* chunkName: Home */ '@/pages/Home'));
@@ -30,8 +30,8 @@ export const TabBarList: White.RouteTabBar[] = [
   //   title: '统计',
   // },
   {
-    path: '/search',
-    component: Search,
+    path: '/setting',
+    component: Other,
     icon: 'white-account',
     sceneMode: 'scroll',
     title: 'setting',
