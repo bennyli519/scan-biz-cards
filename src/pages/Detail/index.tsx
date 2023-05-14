@@ -2,7 +2,7 @@ import { memo, useEffect, useState, useMemo } from 'react';
 import { Form, Input, Button, TextArea, Space } from 'antd-mobile';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getLocalData, setLocalData } from '@/utils';
-import whatSApp from '@/assets/images/icons/whatSApp.svg';
+import whatAppIcon from '@/assets/images/icons/whatsapp.svg';
 import emailIcon from '@/assets/images/icons/email.svg';
 import addressIcon from '@/assets/images/icons/address.svg';
 import call from '@/assets/images/icons/call.svg';
@@ -144,7 +144,7 @@ const ScanResult = (props: Props) => {
         <img
           width={40}
           height={40}
-          src={whatSApp}
+          src={whatAppIcon}
           onClick={() => {
             addWhatApp(phone);
           }}
