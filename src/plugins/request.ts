@@ -10,6 +10,8 @@ import axios, { AxiosRequestConfig } from 'axios';
  */
 import { getAuth, setAuth } from './../utils/index';
 
+// axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+// axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Content-Type';
 axios.defaults.timeout = 1000 * 10;
 interface AxiosErrorInterface {
   message: string;
@@ -33,6 +35,7 @@ axios.interceptors.response.use(
         Toast.show({ icon: 'fail', content: response.data.message });
       return Promise.reject(response);
     }
+    console.log('respone',response)
     return Promise.resolve(response.data.data);
   },
   (error: AxiosErrorInterface) => {
@@ -61,7 +64,7 @@ const baseRequest = (config: any): Promise<any> => {
     headers: {
       Authorization: `Bearer ${getAuth()}`,
     },
-    url: `${process.env.VITE_HTTP_API}${config.url}`,
+    url: `${import.meta.env.VITE_HTTP_API}${config.url}`,
   };
   return axios.request(config);
 };

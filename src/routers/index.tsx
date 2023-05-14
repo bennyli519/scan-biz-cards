@@ -1,3 +1,4 @@
+
 import { White } from '@/typings';
 import { lazy } from 'react';
 const Search = lazy(() => import(/* chunkName: "Search" */ '@/pages/Search'));
@@ -5,6 +6,7 @@ const List = lazy(() => import(/* chunkName: List */ '@/pages/List'));
 const Camera = lazy(() => import('@/pages/Camera'));
 const Home = lazy(() => import(/* chunkName: Home */ '@/pages/Home'));
 const Detail = lazy(() => import(/* chunkName: Detail */ '@/pages/Detail'));
+const ScanResult = lazy(() => import(/* chunkName: ScanResult */ '@/pages/ScanResult'));
 const Index = lazy(() => import(/* chunkName: Index */ '@/pages/Index'));
 const Other = lazy(() => import(/* chunkName: Other */ '@/pages/Other'));
 const Other1 = lazy(() => import(/* chunkName: Other1 */ '@/pages/Other1'));
@@ -32,7 +34,7 @@ export const TabBarList: White.RouteTabBar[] = [
     component: Search,
     icon: 'white-account',
     sceneMode: 'scroll',
-    title: '我的',
+    title: 'setting',
   },
 ];
 
@@ -47,8 +49,12 @@ const routes: White.RouteConfig[] = [
     component: Camera,
   },
   {
-    path: '/other',
-    component: Other,
+    path: '/result',
+    component: ScanResult,
+  },
+  {
+    path: '/detail/:userId',
+    component: Detail,
   },
   {
     path: '/other1',

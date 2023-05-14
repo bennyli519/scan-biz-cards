@@ -1,10 +1,13 @@
 import history from '@/utils/history';
 import { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation, matchPath } from 'react-router-dom';
+import { CameraOutline } from 'antd-mobile-icons';
+import { useLocation,useNavigate, matchPath } from 'react-router-dom';
 import routers from '../../routers';
 import styles from './index.module.less';
+
 const TabBarView: FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const tabBars = useRef(routers.find((v) => v.tabBars)?.tabBars);
   const [state, setstate] = useState(
     tabBars.current?.findIndex((v) => v.path === window.location.pathname),
@@ -30,6 +33,11 @@ const TabBarView: FC = () => {
       className={`${styles.tabBar} flex  justify-center items-center ${
         isTabBar ? styles.in_page : styles.out_page
       }`}>
+      <div
+        className="absolute w-6 h-6 bottom-1 bg-blue-400 flex justify-center items-center rounded-full"
+        onClick={() => navigate('/camera')}>
+        <CameraOutline color="#fff" fontSize={36} />
+      </div>
       {tabBars.current?.map(({ title, path, icon }, index) => (
         <div
           className={`flex flex-col justify-center items-center ${

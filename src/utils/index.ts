@@ -102,8 +102,17 @@ export const getBase64 = (img: File, callback: (res: string) => void): void => {
 	reader?.addEventListener('load', () => callback(reader.result));
 };
 
-export const setLocalData = (key: KEYS, value: any) => {
+export const setLocalData = (key: string, value: any) => {
 	try {
 		localStorage.setItem(key, JSON.stringify(value));
 	} catch (error) {}
+};
+
+export const getLocalData = (key: string) => {
+	try {
+		const value = localStorage.getItem(key);
+		return value ? JSON.parse(value) : null;
+	} catch (error) {
+		return null;
+	}
 };
