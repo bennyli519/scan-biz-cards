@@ -6,40 +6,29 @@ import whatAppIcon from '@/assets/images/icons/whatsapp.svg';
 import emailIcon from '@/assets/images/icons/email.svg';
 import addressIcon from '@/assets/images/icons/address.svg';
 import call from '@/assets/images/icons/call.svg';
+import { ItemInfo, XFCardResult } from '../ScanResult';
 
-interface CardInfo {
-  ItemCoord?: Record<string, string>;
-  Name: string;
-  Value: string;
-  Key: string;
+
+type Result = XFCardResult<ItemInfo<string>[]> & {
+  eventName:string;
+  notes:string;
 }
 
 interface Props {
-  data: CardInfo[];
+  data: Result;
 }
 
 const ScanResult = (props: Props) => {
   const { userId } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<Result>({} as Result);
   const [form] = Form.useForm();
 
   const onFinish = (values: any) => {
-    const arr = [];
-    for (const [key, value] of Object.entries(values)) {
-      console.log(`${key}: ${value}`);
-      arr.push({
-        Name: key,
-        Value: value,
-      });
-    }
 
     const updateData = {
       userId,
-      name: values['姓名'],
-      phone: values['手机'],
-      email: values['邮箱'],
-      data: arr,
+      ...values
     };
 
     const currentList = getLocalData('contactList') ?? [];
@@ -57,41 +46,11 @@ const ScanResult = (props: Props) => {
     navigate('/');
   };
 
-  const email = useMemo(
-    () =>
-      data.filter(
-        (item: { Name: string; Value: string }) => item.Name === '邮箱',
-      )[0]?.Value ?? '',
-    [data],
-  );
-  const phone = useMemo(
-    () =>
-      data.filter(
-        (item: { Name: string; Value: string }) => item.Name === '手机',
-      )[0]?.Value ?? '',
-    [data],
-  );
-
-  const eventName = useMemo(
-    () =>
-      data.filter(
-        (item: { Name: string; Value: string }) => item.Name === 'EventName',
-      )[0]?.Value ?? '',
-    [data],
-  );
-
-  const address = useMemo(
-    () =>{
-      const CAddresss = data.filter(
-        (item: { Name: string; Value: string }) => item.Name === '地址',
-      )[0]?.Value;
-      const EAddresss = data.filter(
-        (item: { Name: string; Value: string }) => item.Name === '英文地址',
-      )[0]?.Value
-      return EAddresss ?? CAddresss ?? ''
-    },
-    [data],
-  );
+  const phone = useMemo(() => {
+    if(Object.keys(data).length>0){
+      return data?.telephone[0]?.item
+    }
+  } , [data])
 
   const addFriendInWeChat = (username: string, message: string) => {
     const url = `weixin://addfriend/${username}?hello=${encodeURIComponent(
@@ -101,12 +60,12 @@ const ScanResult = (props: Props) => {
   };
 
   const sendEmail = (email: string) => {
-    const bodyText = `Hello, This is benny from ${eventName}`;
+    const bodyText = `Hello, This is benny from ${data?.eventName}`;
     window.location.href = `mailto:${email}?subject=邮件主题&body=${bodyText}`;
   };
 
   const addWhatApp = (phone: string) => {
-    const bodyText = `Hello, This is benny from ${eventName}`;
+    const bodyText = `Hello, This is benny from ${data?.eventName}`;
     window.location.href = `https://wa.me/${phone}?text=${bodyText}`;
   };
 
@@ -121,14 +80,15 @@ const ScanResult = (props: Props) => {
 
   useEffect(() => {
     const list = getLocalData('contactList') || [];
-    const { data } = list.filter(
+    const data = list.filter(
       (item: { userId: string }) => item.userId === userId,
     )[0];
     setData(data);
-    data.forEach((item: CardInfo) => {
-      form.setFieldValue(item.Name, item.Value);
-    });
   }, []);
+
+  useEffect(() => {
+    form.setFieldsValue(data)
+   }, [form, data])
 
   return (
     <div>
@@ -138,7 +98,7 @@ const ScanResult = (props: Props) => {
           height={45}
           src={emailIcon}
           onClick={() => {
-            sendEmail(email);
+            sendEmail(data.email[0].item);
           }}
         />
         <img
@@ -146,44 +106,151 @@ const ScanResult = (props: Props) => {
           height={40}
           src={whatAppIcon}
           onClick={() => {
-            addWhatApp(phone);
+            addWhatApp(phone!);
           }}
         />
         <img width={40} height={40} src={addressIcon}onClick={()=>{
-           checkMap(address)
+           checkMap(data.origin_address[0].item)
         }} 
         />
-        <img width={40} height={40} src={call} onClick={()=>{callPhone(phone)}} />
+        <img width={40} height={40} src={call} onClick={()=>{callPhone(phone!)}} />
       </div>
       <Form
         form={form}
         layout="horizontal"
+        initialValues={data}
         onFinish={onFinish}
         footer={
           <Button block type="submit" color="primary" size="large">
             Save
           </Button>
         }>
-        {data.map((item: CardInfo, index: number) => {
-          if (item.Name === 'Notes' || item.Name === 'EventName') {
+        {data?.formatted_name &&
+          data.formatted_name.length > 0 &&
+          data.formatted_name.map((item, index) => {
             return (
-              <Form.Item key={index} name={item.Name} label={item.Name}>
-                <TextArea
-                  placeholder={item.Name}
-                  maxLength={100}
-                  rows={2}
-                  showCount
-                />
+              <Form.Item
+                name={['formatted_name', index, 'item']}
+                key={'formatted_name' + index}
+                label="Name">
+                <Input placeholder="Name" />
               </Form.Item>
             );
-          }
-          
-          return (
-            <Form.Item name={item.Name} key={index} label={item.Name}>
-              <Input value={item.Value} clearable />
-            </Form.Item>
-          );
-        })}
+          })}
+
+        {data?.nickname &&
+          data.nickname.length > 0 &&
+          data.nickname.map((item, index) => {
+            return (
+              <Form.Item
+                name={['nickname', index, 'item']}
+                key={'nickname' + index}
+                label="NickName">
+                <Input placeholder="NickName" />
+              </Form.Item>
+            );
+          })}
+
+        {data?.title &&
+          data.title.length > 0 &&
+          data.title.map((item, index) => {
+            return (
+              <Form.Item
+                name={['title', index, 'item']}
+                key={'title' + index}
+                label="Title">
+                <Input placeholder="Title" />
+              </Form.Item>
+            );
+          })}
+
+        {data?.origin_address &&
+          data.origin_address.length > 0 &&
+          data.origin_address.map((item, index) => {
+            return (
+              <Form.Item
+                name={['origin_address', index, 'item']}
+                key={'origin_address' + index}
+                label="Address">
+                <TextArea rows={3} placeholder="Address" />
+              </Form.Item>
+            );
+          })}
+
+        {data?.email &&
+          data.email.length > 0 &&
+          data.email.map((item, index) => {
+            return (
+              <Form.Item
+                name={['email', index, 'item']}
+                key={'email' + index}
+                label="Email">
+                <Input clearable />
+              </Form.Item>
+            );
+          })}
+
+        {data?.organization &&
+          data.organization.length > 0 &&
+          data.organization.map((organization, index) => {
+            if (organization.item.unit) {
+              return (
+                <Form.Item
+                  name={['organization', index, 'item', 'unit']}
+                  key={'organization' + index}
+                  label="Organization">
+                  <Input clearable />
+                </Form.Item>
+              );
+            } else {
+              return (
+                <Form.Item
+                  name={['organization', index, 'item', 'name']}
+                  key={'organization' + index}
+                  label="Organization">
+                  <TextArea />
+                </Form.Item>
+              );
+            }
+          })}
+
+        {data?.telephone &&
+          data.telephone.length > 0 &&
+          data.telephone.map((item, index) => {
+            return (
+              <Form.Item
+                name={['telephone', index, 'item', 'number']}
+                key={'telephone' + index}
+                label="Telephone">
+                <Input clearable />
+              </Form.Item>
+            );
+          })}
+
+        {data?.url &&
+          data.url.length > 0 &&
+          data.url.map((item, index) => {
+            return (
+              <Form.Item
+                name={['url', index, 'item']}
+                key={'url' + index}
+                label="Website">
+                <Input clearable />
+              </Form.Item>
+            );
+          })}
+
+        <Form.Item name="eventName" label="EventName">
+          <TextArea
+            placeholder="EventName"
+            maxLength={100}
+            rows={2}
+            showCount
+          />
+        </Form.Item>
+        <Form.Item name="notes" label="Notes">
+          <TextArea placeholder="Notes" maxLength={100} rows={2} showCount />
+        </Form.Item>
       </Form>
     </div>
   );
