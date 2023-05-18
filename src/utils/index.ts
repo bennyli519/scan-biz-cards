@@ -82,12 +82,13 @@ export const base64ToFile = (base64: string, cb: (file: any) => void) => {
 		fetch(base64)
 			.then((r) => r.blob())
 			.then((blb) => {
-				const file = new File([blb], `${randomId()}.png`, {
-					type: 'image/png',
+				const file = new File([blb], `${randomId()}.jpeg`, {
+					type: 'image/jpeg',
 				});
 				cb(file);
 			});
 	} catch (error) {
+    console.log('error',error);
 		cb(null);
 	}
 };

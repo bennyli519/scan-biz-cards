@@ -16,6 +16,7 @@ const CameraPage = () => {
     setIsFrontCamera(!isFrontCamera);
   };
   const handleCaptureImage = () => {
+    console.log('------')
     const base64 = camera.current.takePhoto();
     console.log('base64',base64);
     docsApiSubmit(base64);
@@ -24,40 +25,44 @@ const CameraPage = () => {
   const camera = useRef(null);
   const docsApiSubmit = async (imageUri: string) => {
     setAppLoading(true);
-    try {
-      base64ToFile(imageUri, async (file) => {
-        const formData = new FormData();
-        if(file.size > 1024 * 1024 * 4){
-          Toast.show('图片大小超过4M');
-        }
-        formData.append('image', file);
-        const cardInfo = await post('/ocr/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }).catch(()=>{
-        }).finally(()=>{
-          setImageData('')
-          setAppLoading(false)
-        });
-  
-        if (!cardInfo) {
-          Toast.show('名片识别失败，请重试');
-         
-        } else {
-          setLocalData('cardInfo', cardInfo);
-          navigate('/result', {
-            state: {
-              data: cardInfo,
-              imageData: imageUri,
-            },
-          });
-        }
-        setAppLoading(false);
-      });
-    } catch (error) {
-      setAppLoading(false);
+    const bytes = window.atob(imageUri.split(',')[1]); // 通过atob将base64进行编码
+    const buffer = new ArrayBuffer(bytes.length);
+    const uint = new Uint8Array(buffer); // 生成一个8位数的数组
+    for (let i = 0; i < bytes.length; i++) {
+      uint[i] = bytes.charCodeAt(i); // 根据长度返回相对应的Unicode 编码
     }
+    // Blob对象
+    const file = new Blob([buffer], { type: 'image/jpeg' })
+    const formData = new FormData();
+    console.log('file',JSON.stringify(file));
+    if(file.size > 1024 * 1024 * 4){
+      Toast.show('图片大小超过4M');
+    }
+    formData.append('image', file);
+    const cardInfo = await post('/ocr/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }).catch((error)=>{
+      console.log('error',error);
+    }).finally(()=>{
+      setImageData('')
+      setAppLoading(false)
+    });
+
+    if (!cardInfo) {
+      Toast.show('名片识别失败，请重试');
+     
+    } else {
+      setLocalData('cardInfo', cardInfo);
+      navigate('/result', {
+        state: {
+          data: cardInfo,
+          imageData: imageUri,
+        },
+      });
+    }
+    setAppLoading(false);
   };
   const handleFromGallery = (e: any) => {
     const file = e.target.files[0];
