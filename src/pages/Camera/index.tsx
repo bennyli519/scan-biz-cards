@@ -27,24 +27,29 @@ const CameraPage = () => {
       base64ToFile(imageUri, async (file) => {
         const formData = new FormData();
         formData.append('image', file);
-       	const cardInfo = await post('/ocr/upload', formData, {
+        const cardInfo = await post('/ocr/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+        }).catch(()=>{
+        }).finally(()=>{
+          setImageData('')
+          setAppLoading(false)
         });
-		if(!cardInfo){
-      Toast.show('名片识别失败，请重试');
-      navigate('/');
-    } else{
-      setLocalData('cardInfo',cardInfo)
-      navigate('/result',{
-        state:{
-          data:cardInfo,
-          imageData:imageUri,
+  
+        if (!cardInfo) {
+          Toast.show('名片识别失败，请重试');
+         
+        } else {
+          setLocalData('cardInfo', cardInfo);
+          navigate('/result', {
+            state: {
+              data: cardInfo,
+              imageData: imageUri,
+            },
+          });
         }
-      })
-    }
-		setAppLoading(false);
+        setAppLoading(false);
       });
     } catch (error) {
       setAppLoading(false);

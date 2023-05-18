@@ -23,8 +23,8 @@ export interface XFCardResult<K> {
   }>[];
   nickname: K;
   organization: ItemInfo<{ unit: string }>[];
-  origin_address: K;
-  telephone: K;
+  origin_address:K ;
+  telephone: ItemInfo<{ number: string }>[];
   title: K;
   url: K;
 }

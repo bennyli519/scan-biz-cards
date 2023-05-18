@@ -48,7 +48,7 @@ const ScanResult = (props: Props) => {
 
   const phone = useMemo(() => {
     if(Object.keys(data).length>0){
-      return data?.telephone[0]?.item
+      return data?.telephone[0]?.item.number
     }
   } , [data])
 
@@ -60,12 +60,12 @@ const ScanResult = (props: Props) => {
   };
 
   const sendEmail = (email: string) => {
-    const bodyText = `Hello, This is benny from ${data?.eventName}`;
+    const bodyText = `Hello, This is benny from ${data?.eventName ?? 'xxx'}`;
     window.location.href = `mailto:${email}?subject=邮件主题&body=${bodyText}`;
   };
 
   const addWhatApp = (phone: string) => {
-    const bodyText = `Hello, This is benny from ${data?.eventName}`;
+    const bodyText = `Hello, This is benny from ${data?.eventName ?? 'xxx'}`;
     window.location.href = `https://wa.me/${phone}?text=${bodyText}`;
   };
 
