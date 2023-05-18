@@ -17,6 +17,7 @@ const CameraPage = () => {
   };
   const handleCaptureImage = () => {
     const base64 = camera.current.takePhoto();
+    console.log('base64',base64);
     docsApiSubmit(base64);
     setImageData(base64);
   };
@@ -26,6 +27,9 @@ const CameraPage = () => {
     try {
       base64ToFile(imageUri, async (file) => {
         const formData = new FormData();
+        if(file.size > 1024 * 1024 * 4){
+          Toast.show('图片大小超过4M');
+        }
         formData.append('image', file);
         const cardInfo = await post('/ocr/upload', formData, {
           headers: {
