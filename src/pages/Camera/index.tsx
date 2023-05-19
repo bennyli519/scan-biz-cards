@@ -43,8 +43,6 @@ const CameraPage = () => {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    }).catch((error)=>{
-      console.log('error',error);
     }).finally(()=>{
       setImageData('')
       setAppLoading(false)
