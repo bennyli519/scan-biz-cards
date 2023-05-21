@@ -66,7 +66,8 @@ const ScanResult = (props: Props) => {
 
   const addWhatApp = (phone: string) => {
     const bodyText = `Hello, This is benny from ${data?.eventName ?? 'xxx'}`;
-    window.location.href = `https://wa.me/${phone}?text=${bodyText}`;
+    console.log('2',`https://wa.me/${phone.replaceAll(/[(|)|+]/g,'')}?text=${bodyText}`);
+    window.location.href = `https://wa.me/${phone.replaceAll(/[(|)|+]/g,'')}?text=${bodyText}`;
   };
 
   const callPhone = (phone:string)=>{
