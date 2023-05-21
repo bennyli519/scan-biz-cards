@@ -10,8 +10,6 @@ const Home = () => {
 
   useEffect(() => {
     const list = getLocalData('contactList') || [];
-    if(list?.name) localStorage.clear(); 
-    console.log('list', list);
     setList(list);
   }, []);
 
