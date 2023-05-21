@@ -102,8 +102,8 @@ const ScanResult = () => {
               <Form.Item
                 name={['formatted_name', index, 'item']}
                 key={'formatted_name' + index}
-                label="Name">
-                <Input placeholder="Name" />
+                label={index ? <div /> : 'Name'}>
+                <Input placeholder="Name" clearable />
               </Form.Item>
             );
           })}
@@ -116,7 +116,7 @@ const ScanResult = () => {
                 name={['nickname', index, 'item']}
                 key={'nickname' + index}
                 label="NickName">
-                <Input placeholder="NickName" />
+                <Input placeholder="NickName" clearable />
               </Form.Item>
             );
           })}
@@ -128,7 +128,7 @@ const ScanResult = () => {
               <Form.Item
                 name={['title', index, 'item']}
                 key={'title' + index}
-                label="Title">
+                label={index ? <div /> : 'Title'}>
                 <Input placeholder="Title" />
               </Form.Item>
             );
@@ -141,7 +141,7 @@ const ScanResult = () => {
               <Form.Item
                 name={['origin_address', index, 'item']}
                 key={'origin_address' + index}
-                label="Address">
+                label={index ? <div /> : 'Address'}>
                 <TextArea rows={3} placeholder="Address" />
               </Form.Item>
             );
@@ -168,7 +168,8 @@ const ScanResult = () => {
                 <Form.Item
                   name={['organization', index, 'item', 'unit']}
                   key={'organization' + index}
-                  label="Organization">
+                  label={index ? <div /> : 'Organization'}>
+               
                   <Input clearable />
                 </Form.Item>
               );
@@ -177,8 +178,8 @@ const ScanResult = () => {
                 <Form.Item
                   name={['organization', index, 'item', 'name']}
                   key={'organization' + index}
-                  label="Organization">
-                  <TextArea />
+                  label={index ? <div /> : 'Organization'}>
+                  <TextArea  />
                 </Form.Item>
               );
             }
@@ -191,7 +192,7 @@ const ScanResult = () => {
               <Form.Item
                 name={['telephone', index, 'item', 'number']}
                 key={'telephone' + index}
-                label="Telephone">
+                label={index ? <div /> : 'Telephone'}>
                 <Input clearable />
               </Form.Item>
             );
