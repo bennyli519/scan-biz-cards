@@ -27,7 +27,7 @@ const Home = () => {
             return (
               <List.Item key={idx} onClick={()=>{
                 navigate(`detail/${item?.userId}`);
-              }}>{item?.formatted_name && item?.formatted_name[0]?.item ?? "No name"} </List.Item>
+              }}>{(item?.formatted_name && item?.formatted_name[0]?.item) ?? "No name"} </List.Item>
             )
           })
         }
