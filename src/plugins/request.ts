@@ -1,26 +1,22 @@
+/* eslint-disable no-implicit-coercion */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { Toast } from 'antd-mobile';
-import axios, { AxiosRequestConfig } from 'axios';
-/*
- * @Descripttion:
- * @version:
- * @Author: 小白
- * @Date: 2020-10-04 13:11:29
- * @LastEditors: 小白
- * @LastEditTime: 2022-01-18 21:45:04
- */
+import axios, { type AxiosRequestConfig } from 'axios';
+
 import { getAuth, setAuth } from './../utils/index';
 
 // axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 // axios.defaults.headers.common['Access-Control-Allow-Headers'] = 'Content-Type';
 axios.defaults.timeout = 1000 * 10;
-interface AxiosErrorInterface {
+type AxiosErrorInterface = {
   message: string;
   config: any;
   response: any;
-}
+};
 
 axios.interceptors.request.use(
   (config: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return config;
   },
   (error: AxiosErrorInterface) => {
@@ -29,19 +25,22 @@ axios.interceptors.request.use(
 );
 
 axios.interceptors.response.use(
-  (response: any) => {
+  async (response: any) => {
     if (response.status !== 200) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       response.data.message &&
         Toast.show({ icon: 'fail', content: response.data.message });
       return Promise.reject(response);
     }
-    console.log('respone',response)
+
+    console.log('respone', response);
     return Promise.resolve(response.data.data);
   },
-  (error: AxiosErrorInterface) => {
+  async (error: AxiosErrorInterface) => {
     if (~`${error.message}`.indexOf('timeout')) {
       Toast.show({ icon: 'fail', content: '网络超时' });
     }
+
     error.response &&
       error.response.data.message &&
       Toast.show({ icon: 'fail', content: error.response.data.message });
@@ -58,7 +57,7 @@ axios.interceptors.response.use(
   },
 );
 
-const baseRequest = (config: any): Promise<any> => {
+const baseRequest = async (config: any): Promise<any> => {
   config = {
     ...config,
     headers: {
@@ -69,9 +68,9 @@ const baseRequest = (config: any): Promise<any> => {
   return axios.request(config);
 };
 
-export const get = (
+export const get = async (
   url: string,
-  params?: object,
+  params?: Record<string, unknown>,
   config?: AxiosRequestConfig,
 ) =>
   baseRequest({
@@ -80,9 +79,9 @@ export const get = (
     url,
     ...config,
   });
-export const post = (
+export const post = async (
   url: string,
-  data: object,
+  data: Record<string, unknown>,
   config?: AxiosRequestConfig,
 ) => {
   return baseRequest({
@@ -92,9 +91,10 @@ export const post = (
     ...config,
   });
 };
-export const patch = (
+
+export const patch = async (
   url: string,
-  data: object,
+  data: Record<string, unknown>,
   config?: AxiosRequestConfig,
 ) => {
   return baseRequest({
@@ -104,9 +104,10 @@ export const patch = (
     ...config,
   });
 };
-export const put = (
+
+export const put = async (
   url: string,
-  data?: object,
+  data?: Record<string, unknown>,
   config?: AxiosRequestConfig,
 ) => {
   return baseRequest({
@@ -116,9 +117,10 @@ export const put = (
     ...config,
   });
 };
-export const remove = (
+
+export const remove = async (
   url: string,
-  data?: object,
+  data?: Record<string, unknown>,
   config?: AxiosRequestConfig,
 ) => {
   return baseRequest({
