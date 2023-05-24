@@ -1,0 +1,133 @@
+{
+  "extends": [
+    "xo",
+    "xo-typescript",
+    "xo-react/space",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["import"],
+  "rules": {
+    "import/no-extraneous-dependencies": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal"],
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "external",
+            "position": "before"
+          },
+          {
+            "pattern": "@/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "import/prefer-default-export": "off",
+    "class-methods-use-this": "off",
+    "no-await-in-loop": "off",
+    "no-console": [
+      "error",
+      {
+        "allow": ["warn", "error"]
+      }
+    ],
+    "no-restricted-syntax": "off",
+    "unicorn/no-array-callback-reference": "off",
+    "node/file-extension-in-import": "off",
+    "new-cap": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-member-accessibility": [
+      "error",
+      {
+        "accessibility": "no-public"
+      }
+    ],
+    // "@typescript-eslint/explicit-function-return-type": "warn", // TODO: to be evaluated
+    // custom rules
+    "react-hooks/exhaustive-deps": "error",
+    "react/prop-types": "off",
+    "accessor-pairs": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "capitalized-comments": "off",
+    "@typescript-eslint/no-implicit-any-catch": "off",
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": ["@/theme", "lodash", "../../../*"]
+      }
+    ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "default",
+        "format": ["camelCase"]
+      },
+      {
+        "selector": "variable",
+        "format": ["camelCase", "PascalCase", "UPPER_CASE"]
+      },
+      {
+        "selector": ["function", "objectLiteralMethod"],
+        "format": ["camelCase", "PascalCase"]
+      },
+      {
+        "selector": "typeLike",
+        "format": ["PascalCase"]
+      },
+      {
+        "selector": "enumMember",
+        "format": ["UPPER_CASE"]
+      },
+      {
+        "selector": "parameter",
+        "format": ["camelCase", "PascalCase"],
+        "leadingUnderscore": "allow"
+      },
+      {
+        "selector": "property",
+        "format": ["camelCase", "snake_case", "UPPER_CASE", "PascalCase"],
+        "leadingUnderscore": "allowSingleOrDouble",
+        "trailingUnderscore": "allowSingleOrDouble"
+      }
+    ],
+    "react/require-default-props": "off", // Conflict with typescript
+    "react/no-unused-prop-types": "off" // Conflict with typescript
+  },
+  "overrides": [
+    {
+      "files": ["*.test.ts", "*.test.tsx"],
+      "rules": {
+        "max-nested-callbacks": "off"
+      }
+    }
+  ],
+  "globals": {
+    "React": true,
+    "JSX": true,
+    "document": true,
+    "zE": "readonly"
+  },
+  "env": {
+    "browser":true
+  },
+  "ignorePatterns": [
+    // they are provided by CRS, better keep the same format
+    "react-app-env.d.ts",
+    "reportWebVitals.ts",
+    // vite related files, just ignore them
+    "vite-env.d.ts",
+    "vite.config.ts"
+  ]
+}

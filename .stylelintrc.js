@@ -1,11 +1,3 @@
-/*
- * @Descripttion:
- * @version:
- * @Author: 小白
- * @Date: 2021-09-13 22:26:28
- * @LastEditors: 小白
- * @LastEditTime: 2021-09-15 22:34:53
- */
 module.exports = {
   extends: 'stylelint-config-standard',
   rules: {
