@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable camelcase */
-import { memo } from 'react';
+import { memo, useEffect, useState } from 'react';
 
 import {
   Form,
@@ -15,6 +15,8 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { post } from '@/plugins/request';
+
+import { formatData } from '../Detail';
 
 export type ItemInfo<T> = {
   item: T;
@@ -48,13 +50,15 @@ export type XFCardResult<K> = {
 function ScanResult() {
   const navigate = useNavigate();
   const {
-    state: { data, imageData },
+    state: { ocrData, imageData },
   } = useLocation() as {
     state: {
-      data: XFCardResult<Array<ItemInfo<string>>>;
+      ocrData: XFCardResult<Array<ItemInfo<string>>>;
       imageData: string;
     };
   };
+  const [data, setData] = useState<XFCardResult<Array<ItemInfo<string>>>>();
+  const [form] = Form.useForm();
 
   const onFinish = async (values: any) => {
     const visitorId = localStorage.getItem('visitor-id');
@@ -69,12 +73,37 @@ function ScanResult() {
     navigate('/');
   };
 
+  useEffect(() => {
+    const test = [
+      'address',
+      'email',
+      'formatted_name',
+      'name',
+      'nickname',
+      'organization',
+      'origin_address',
+      'telephone',
+      'title',
+      'url',
+    ];
+    const obj: any = ocrData;
+
+    for (const key of test) {
+      if (!obj[key]) obj[key] = null;
+    }
+
+    const formatObj = formatData(obj);
+    setData(formatObj);
+    form.setFieldsValue(formatObj);
+  }, [form, ocrData]);
+
   return (
     <div>
       <Space className="w-full" justify="center" align="center">
         <Image src={imageData} width={300} height={150} fit="contain" />
       </Space>
       <Form
+        form={form}
         layout="horizontal"
         initialValues={data}
         footer={
@@ -203,12 +232,12 @@ function ScanResult() {
                 name={['url', index, 'item']}
                 label="Website"
               >
-                <Input clearable />
+                <Input clearable placeholder="Website" />
               </Form.Item>
             );
           })}
 
-        <Form.Item name="eventName" label="EventName">
+        <Form.Item name="event_name" label="EventName">
           <TextArea
             showCount
             placeholder="EventName"
