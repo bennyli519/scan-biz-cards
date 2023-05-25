@@ -59,7 +59,7 @@ function CameraPage() {
       setLocalData('cardInfo', cardInfo);
       navigate('/result', {
         state: {
-          data: cardInfo,
+          ocrData: cardInfo,
           imageData: imageUri,
         },
       });

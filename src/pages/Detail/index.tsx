@@ -1,8 +1,11 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 import { memo, useEffect, useState, useMemo } from 'react';
 
 import { Form, Input, Button, TextArea, Toast } from 'antd-mobile';
+import { omit } from 'lodash';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import addressIcon from '@/assets/images/icons/address.svg';
@@ -14,12 +17,67 @@ import { get, patch } from '@/plugins/request';
 import { type ItemInfo, type XFCardResult } from '../ScanResult';
 
 type Result = XFCardResult<Array<ItemInfo<string>>> & {
-  eventName: string;
+  event_name: string;
   notes: string;
 };
 
 type Props = {
   data: Result;
+};
+export const formatData = (res: any) => {
+  const basicItem = {
+    item: '',
+    position: '0',
+  };
+
+  const nameItem = {
+    item: {
+      family_name: '',
+      give_name: '',
+    },
+    position: '0',
+  };
+  const addressItem = {
+    item: {
+      locality: '',
+      street: '',
+      type: [],
+    },
+    position: '0',
+  };
+  const organizationItem = {
+    item: {
+      unit: '',
+    },
+  };
+  const telephoneItem = {
+    item: {
+      number: '',
+    },
+  };
+  const mapping: any = {
+    address: addressItem,
+    name: nameItem,
+    organization: organizationItem,
+    telephone: telephoneItem,
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const omitObj = omit(res, ['deleted_at', 'event_name', 'notes']);
+
+  for (const [key, value] of Object.entries(omitObj)) {
+    if (!res[key]) {
+      res[key] = [];
+
+      if (mapping[key]) {
+        res[key].push(mapping[key]);
+      } else {
+        res[key].push(basicItem);
+      }
+    }
+  }
+
+  return res as Result;
 };
 
 function ScanResult(props: Props) {
@@ -75,8 +133,9 @@ function ScanResult(props: Props) {
   };
 
   const getDetail = async () => {
-    const res = await get(`/biz-card/${bizCardId!}`);
-    setData(res);
+    const res = (await get(`/biz-card/${bizCardId!}`)) as Result;
+    const newData = formatData(res);
+    setData(newData);
   };
 
   useEffect(() => {
@@ -126,7 +185,7 @@ function ScanResult(props: Props) {
       <Form
         form={form}
         layout="horizontal"
-        initialValues={data}
+        initialValues={{ ...data }}
         footer={
           <Button block type="submit" color="primary" size="large">
             Save
@@ -253,12 +312,12 @@ function ScanResult(props: Props) {
                 name={['url', index, 'item']}
                 label="Website"
               >
-                <Input clearable />
+                <Input clearable placeholder="website" />
               </Form.Item>
             );
           })}
 
-        <Form.Item name="eventName" label="EventName">
+        <Form.Item name="event_name" label="EventName">
           <TextArea
             showCount
             placeholder="EventName"
