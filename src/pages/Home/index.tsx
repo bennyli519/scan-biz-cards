@@ -4,6 +4,9 @@ import { List, Empty } from 'antd-mobile';
 import { useNavigate } from 'react-router-dom';
 
 import { post } from '@/plugins/request';
+import { getLocalData } from '@/utils';
+
+import { type UserInfo } from '../UserCenter';
 
 type CardItem = {
   id: string;
@@ -24,8 +27,11 @@ function Home() {
   };
 
   const getContactList = async () => {
+    const user = getLocalData('user') as UserInfo;
+    const visitorIds = user.visitors.map((item) => item.id) ?? [];
     const res = await post('/biz-card/contacts', {
-      visitor_id: localStorage.getItem('visitor-id'),
+      visitor_ids:
+        visitorIds.length > 0 ? visitorIds : localStorage.getItem('visitor-id'),
     });
     if (res.length > 0) {
       setList(res);
