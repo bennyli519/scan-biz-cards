@@ -12,7 +12,10 @@ const ScanResult = lazy(
   async () => import(/* chunkName: ScanResult */ '@/pages/ScanResult'),
 );
 const Index = lazy(async () => import(/* chunkName: Index */ '@/pages/Index'));
-const Other = lazy(async () => import(/* chunkName: Other */ '@/pages/Other'));
+const UserCenter = lazy(
+  async () => import(/* chunkName: Other */ '@/pages/UserCenter'),
+);
+const Register = lazy(async () => import('@/pages/UserCenter/Register'));
 const Other1 = lazy(
   async () => import(/* chunkName: Other1 */ '@/pages/Other1'),
 );
@@ -37,7 +40,7 @@ export const TabBarList: White.RouteTabBar[] = [
   // },
   {
     path: '/setting',
-    component: Other,
+    component: UserCenter,
     icon: 'white-account',
     sceneMode: 'scroll',
     title: 'setting',
@@ -63,13 +66,13 @@ const routes: White.RouteConfig[] = [
     component: Detail,
   },
   {
+    path: '/register',
+    component: Register,
+  },
+  {
     path: '/other1',
     sceneMode: 'bottom',
     component: Other1,
-  },
-  {
-    path: '/dcotorDetail',
-    component: Detail,
   },
   {
     path: '*',

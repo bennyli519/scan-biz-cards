@@ -26,7 +26,7 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
   async (response: any) => {
-    if (response.status !== 200) {
+    if (response.status !== 200 && response.status !== 201) {
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       response.data.message &&
         Toast.show({ icon: 'fail', content: response.data.message });

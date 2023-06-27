@@ -14,11 +14,13 @@ export const getAuth = () => {
   const auth = window.localStorage.getItem('auth');
   return auth || '';
 };
+
 export const getCode = () => {
   return window.location.search
     ? searchObj(window.location.search).code
     : window.location.pathname.split('/')[2];
 };
+
 /**
  * 获取url参数
  * @param search url参数
@@ -68,52 +70,55 @@ export const setWindowHeight = () => {
     if (document.compatMode === 'CSS1Compat') {
       windowHeight = document.documentElement.clientHeight;
     } else {
-      // @ts-ignore
+      // @ts-expect-error
       windowHeight = window.body.clientHeight;
     }
   }
+
   document
     .getElementsByTagName('body')[0]
     .style.setProperty('--height-primary', `${windowHeight}px`);
 };
 
 export const base64ToFile = (base64: string, cb: (file: any) => void) => {
-	try {
-		fetch(base64)
-			.then((r) => r.blob())
-			.then((blb) => {
-				const file = new File([blb], `${randomId()}.jpeg`, {
-					type: 'image/jpeg',
-				});
-				cb(file);
-			});
-	} catch (error) {
-    console.log('error',error);
-		cb(null);
-	}
+  try {
+    fetch(base64)
+      .then(async (r) => r.blob())
+      .then((blb) => {
+        const file = new File([blb], `${randomId()}.jpeg`, {
+          type: 'image/jpeg',
+        });
+        cb(file);
+      });
+  } catch (error) {
+    console.log('error', error);
+    cb(null);
+  }
 };
 
 export const randomId = () => {
-	return Math.random().toString(36).substr(2, 9);
+  return Math.random().toString(36).substr(2, 9);
 };
 
 export const getBase64 = (img: File, callback: (res: string) => void): void => {
-	const reader: any = new FileReader();
-	reader.readAsDataURL(img);
-	reader?.addEventListener('load', () => callback(reader.result));
+  const reader: any = new FileReader();
+  reader.readAsDataURL(img);
+  reader?.addEventListener('load', () => {
+    callback(reader.result);
+  });
 };
 
 export const setLocalData = (key: string, value: any) => {
-	try {
-		localStorage.setItem(key, JSON.stringify(value));
-	} catch (error) {}
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {}
 };
 
 export const getLocalData = (key: string) => {
-	try {
-		const value = localStorage.getItem(key);
-		return value ? JSON.parse(value) : null;
-	} catch (error) {
-		return null;
-	}
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : null;
+  } catch (error) {
+    return null;
+  }
 };
