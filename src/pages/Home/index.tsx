@@ -28,10 +28,12 @@ function Home() {
 
   const getContactList = async () => {
     const user = getLocalData('user') as UserInfo;
-    const visitorIds = user.visitors.map((item) => item.id) ?? [];
+    const visitorIds = user?.visitors?.map((item) => item.id) ?? [];
     const res = await post('/biz-card/contacts', {
       visitor_ids:
-        visitorIds.length > 0 ? visitorIds : localStorage.getItem('visitor-id'),
+        visitorIds.length > 0
+          ? visitorIds
+          : [localStorage.getItem('visitor-id')],
     });
     if (res.length > 0) {
       setList(res);
